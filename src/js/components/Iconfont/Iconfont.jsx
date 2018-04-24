@@ -2,12 +2,41 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+const href = '//at.alicdn.com/t/font_639510_2gvjf0fu9ye0o1or.css';
+let link;
+
+const createDom = () => {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  const dom = document.createElement('link');
+
+  dom.rel = 'stylesheet';
+  dom.href = href;
+  document.head.appendChild(dom);
+
+  return dom;
+};
+
 class Iconfont extends Component {
+  componentWillMount() {
+    if (!link) {
+      link = createDom();
+      return;
+    }
+
+    if (link.href !== href) {
+      link = createDom();
+      return;
+    }
+  }
+
   render() {
     const { type, theme, className, ...others } = this.props;
     const cls = classnames({
-      iconfont: true,
-      [`iconfont-${type}`]: !!type,
+      'layout-icon': true,
+      [`layout-${type}`]: !!type,
       [`theme-${theme}`]: !!theme,
       [className]: !!className,
     });
