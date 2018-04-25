@@ -19,6 +19,8 @@ const createDom = () => {
   return dom;
 };
 
+createDom();
+
 class Iconfont extends Component {
   componentWillMount() {
     if (!link) {
