@@ -6,7 +6,11 @@ import { renderToString, renderToNodeStream } from 'react-dom/server';
 import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router-dom';
 
-import routers from 'js/container/global/routes';
+/**
+ * only render
+ */
+
+// import routers from 'js/container/global/routes';
 
 import appConfig from '../config';
 
@@ -101,6 +105,14 @@ export default function (parameters = {}) {
   app.use(express.static('./public'));
 
   /**
+   * only render
+   */
+
+  app.use((req, res) => {
+    res.send(createTempString(parameters)());
+  });
+
+  /**
    * renderToString
    */
 
@@ -121,26 +133,26 @@ export default function (parameters = {}) {
    * renderToNodeStream
    */
 
-  app.use((req, res) => {
-    const store = createStore();
-    const comp = (
-      <Provider store={store}>
-        <StaticRouter location={req.url} context={{}}>
-          { routers }
-        </StaticRouter>
-      </Provider>
-    );
+  // app.use((req, res) => {
+  //   const store = createStore();
+  //   const comp = (
+  //     <Provider store={store}>
+  //       <StaticRouter location={req.url} context={{}}>
+  //         { routers }
+  //       </StaticRouter>
+  //     </Provider>
+  //   );
 
-    const obj = createStreamString(parameters);
-    const stream = renderToNodeStream(comp);
+  //   const obj = createStreamString(parameters);
+  //   const stream = renderToNodeStream(comp);
 
-    res.write(obj.start);
-    stream.pipe(res, { end: false });
-    stream.on('end', () => {
-      res.write(obj.end);
-      res.end();
-    });
-  });
+  //   res.write(obj.start);
+  //   stream.pipe(res, { end: false });
+  //   stream.on('end', () => {
+  //     res.write(obj.end);
+  //     res.end();
+  //   });
+  // });
 
   server.listen(port, (error) => {
     if (error) {
