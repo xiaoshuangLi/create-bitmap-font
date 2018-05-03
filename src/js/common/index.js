@@ -124,7 +124,7 @@ export function getEles(selector) {
   return document.querySelectorAll(selector);
 }
 
-export function createDom(className = defaultClassName, tag = 'div') {
+export function createDom(className = 'dom-comp-container', tag = 'div') {
   if (typeof document === 'undefined') {
     return;
   }
