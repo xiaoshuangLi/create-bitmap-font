@@ -95,9 +95,9 @@ export function validInput(el) {
   return true;
 }
 
-export function getStyles(ele = '', attr = '') {
-  if (!ele || !attr) {
-    return '';
+export function getStyle(ele = '') {
+  if (!ele) {
+    return {};
   }
   let view = ele.ownerDocument.defaultView;
 
@@ -107,7 +107,17 @@ export function getStyles(ele = '', attr = '') {
 
   const res = view.getComputedStyle(ele);
 
-  return res[attr] || '';
+  return res || {};
+}
+
+export function getStyleValue(ele = '', attr = '') {
+  if (!ele || !attr) {
+    return '';
+  }
+
+  const style = getStyle(ele);
+
+  return style[attr] || '';
 }
 
 export function getEle(selector = window) {
