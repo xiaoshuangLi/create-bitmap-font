@@ -124,6 +124,18 @@ export function getEles(selector) {
   return document.querySelectorAll(selector);
 }
 
+export function createDom(className = defaultClassName, tag = 'div') {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  const dom = document.createElement(tag);
+  dom.classList.add(className);
+  document.body.appendChild(dom);
+
+  return dom;
+};
+
 let baseId = new Date().getTime();
 
 export function getUId() {
