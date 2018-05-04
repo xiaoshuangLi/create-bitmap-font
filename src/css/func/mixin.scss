@@ -3,8 +3,11 @@
   background: linear-gradient($a, $b, $c);
 }
 
-@mixin bg($size: cover,$url:'/', $x: 50%, $y: 50%){
-  background-image: url($url);
+@mixin bg($size: cover, $url: '', $x: 50%, $y: 50%){
+  @if $url != '' {
+    background-image: url($url);
+  }
+
   background-position: $x $y;
   background-size: $size;
   background-repeat: no-repeat;
