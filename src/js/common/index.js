@@ -149,7 +149,18 @@ export function createDom(className = 'dom-comp-container', tag = 'div') {
   document.body.appendChild(dom);
 
   return dom;
-};
+}
+
+export function getValueFromEvent(event) {
+  if (!event) {
+    return event;
+  }
+
+  const target = event.target === undefined ? event : event.target;
+  const value = target.value === undefined ? target : target.value;
+
+  return value;
+}
 
 let baseId = new Date().getTime();
 
