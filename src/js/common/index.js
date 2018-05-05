@@ -136,7 +136,7 @@ export function getStyleValue(ele = '', attr = '') {
 
   const style = getStyle(ele);
 
-  return style[attr] || '';
+  return style.getPropertyValue[attr];
 }
 
 export function createDom(className = 'dom-comp-container', tag = 'div') {
