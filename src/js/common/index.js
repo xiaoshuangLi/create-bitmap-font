@@ -75,16 +75,30 @@ function valid(el) {
   return true;
 }
 
-export function validInput(el) {
-  if (!el) {
+export function getEle(selector = window) {
+  selector = typeof selector === 'string' ? document.querySelector(selector) : selector;
+
+  return selector;
+}
+
+export function getEles(selector) {
+  if (!selector) {
+    return [document];
+  }
+
+  return document.querySelectorAll(selector);
+}
+
+export function validInput(ele) {
+  if (!ele) {
     return true;
   }
 
-  if (el.checkValidity) {
-    return el.checkValidity();
+  if (ele.checkValidity) {
+    return ele.checkValidity();
   }
 
-  const eles = el.querySelectorAll('*');
+  const eles = ele.querySelectorAll('*');
 
   for (let v = 0, l = eles.length; v <= l; v += 1) {
     if (!valid(eles[v])) {
@@ -99,6 +113,8 @@ export function getStyle(ele = '') {
   if (!ele) {
     return {};
   }
+
+  ele = getEle(ele);
   let view = ele.ownerDocument.defaultView;
 
   if (!view || !view.opener) {
@@ -118,20 +134,6 @@ export function getStyleValue(ele = '', attr = '') {
   const style = getStyle(ele);
 
   return style[attr] || '';
-}
-
-export function getEle(selector = window) {
-  selector = typeof selector === 'string' ? document.querySelector(selector) : selector;
-
-  return selector;
-}
-
-export function getEles(selector) {
-  if (!selector) {
-    return [document];
-  }
-
-  return document.querySelectorAll(selector);
 }
 
 export function createDom(className = 'dom-comp-container', tag = 'div') {
