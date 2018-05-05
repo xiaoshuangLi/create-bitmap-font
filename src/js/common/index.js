@@ -110,12 +110,15 @@ export function validInput(ele) {
 }
 
 export function getStyle(ele = '') {
+  ele = getEle(ele);
+
   if (!ele) {
     return {};
   }
 
-  ele = getEle(ele);
-  let view = ele.ownerDocument.defaultView;
+  const { ownerDocument = {} } = ele;
+
+  let view = ownerDocument.defaultView;
 
   if (!view || !view.opener) {
     view = window;
