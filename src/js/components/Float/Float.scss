@@ -1,0 +1,22 @@
+@import "~css/func/index";
+
+.float-container {
+  @include rules((
+    pointer-events: none,
+    transform: translate3d(0, 0, 0),
+  ));
+}
+
+.components-float-render {
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 0 2px rgba(0,0,0, .2);
+  z-index: 10;
+
+  @include rules((
+    display: inline-block,
+    position: absolute,
+    pointer-events: all,
+    background: white,
+  ));
+}
