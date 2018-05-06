@@ -9,12 +9,11 @@
 
 .components-float-render {
   border-radius: 5px;
-  padding: 10px;
   z-index: 10;
 
   @include rules((
     display: inline-block,
-    position: fixed,
+    position: absolute,
     pointer-events: all,
   ));
 }
