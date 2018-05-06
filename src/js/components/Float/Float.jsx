@@ -40,6 +40,8 @@ const _close = () => {
   otherDom = null;
 };
 
+const _stop = e => e.stopPropagation();
+
 class Float extends Component {
   constructor(props) {
     super(props);
@@ -92,11 +94,17 @@ class Float extends Component {
   }
 
   _addListener() {
+    const ele = this.eleRef.current;
+
     document.addEventListener('click', _close);
+    ele && ele.addEventListener('click', _stop);
   }
 
   _removeListener() {
+    const ele = this.eleRef.current;
+
     document.removeEventListener('click', _close);
+    ele && ele.removeEventListener('click', _stop);
   }
 
   render() {
