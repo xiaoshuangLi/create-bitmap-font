@@ -6,6 +6,9 @@ const config = baseConfig({
   mode: 'development',
 });
 
+const { main: baseMain } = config.entry;
+const restMain = typeof baseMain === 'string' ? [baseMain] : baseMain;
+
 config.devtool = 'source-map';
 
 config.plugins.push(
@@ -18,14 +21,9 @@ config.plugins.push(
   new webpack.NamedModulesPlugin()
 );
 
-if (config.entry.main.length !== 2 && config.entry.main[0] !== 'babel-polyfill') {
-  throw new Error('Unexpected `main` webpack entry point detected');
-}
-
 config.entry.main = [
   `webpack-hot-middleware/client?path=http://${appConfig.webpack.devserver.host}:${appConfig.webpack.devserver.port}/__webpack_hmr`,
-  'babel-polyfill',
-  config.entry.main[1],
+  ...restMain,
 ];
 
 config.output.publicPath = `http://${appConfig.webpack.devserver.host}:${appConfig.webpack.devserver.port}${config.output.publicPath}`;

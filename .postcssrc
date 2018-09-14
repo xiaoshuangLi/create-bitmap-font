@@ -1,7 +1,7 @@
 {
 	"plugins":
 	{
-		"postcss-cssnext": {},
+		"postcss-preset-env": {},
 		"postcss-write-svg": {},
 		"postcss-reporter": {}
 	}
