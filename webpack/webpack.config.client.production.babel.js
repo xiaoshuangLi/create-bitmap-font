@@ -74,7 +74,7 @@ config.plugins.push(
     debug: false,
   }),
   new Visualizer({
-    filename: '../public/bundle-stats.html',
+    filename: '../public/pie.html',
   })
 );
 
