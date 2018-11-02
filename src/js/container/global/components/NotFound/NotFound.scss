@@ -2,46 +2,35 @@
 
 .components-not-found-render {
   background: black;
+  color: white;
 
   @extend %full;
-
-  @include rules((
-    color: white,
-  ));
 
   .text {
     @extend %percenter;
 
-    @include rules((
-      text-align: center,
-    ));
+    text-align: center;
 
     &:before,
     &:after {
       line-height: 1.2;
       font-size: 26px;
       font-weight: bold;
-
-      @include rules((
-        white-space: nowrap,
-      ));
+      white-space: nowrap;
     }
 
     &:before {
-      @include rules((
-        display: block,
-      ));
+      content: attr(data-before);
+      display: block;
     }
 
     &:after {
+      content: attr(data-after);
       color: rgba(white, .6);
       padding-bottom: 3px;
       border-bottom: 1px solid currentColor;
-
-      @include rules((
-        font-size: 12px,
-        display: inline-block,
-      ));
+      font-size: 12px;
+      display: inline-block;
     }
   }
 }

@@ -51,19 +51,15 @@
 }
 
 @mixin full-width {
-  @include rules((
-    left: 0,
-    right: 0,
-    position: absolute,
-  ), true);
+  left: 0;
+  right: 0;
+  position: absolute;
 }
 
 @mixin full-height {
-  @include rules((
-    top: 0,
-    bottom: 0,
-    position: absolute,
-  ), true);
+  top: 0;
+  bottom: 0;
+  position: absolute;
 }
 
 @mixin full {
@@ -73,102 +69,76 @@
 
 @mixin no-scroll {
   &::-webkit-scrollbar {
-    @include rules((
-      opacity: 0,
-      display: none,
-      background: transparent,
-    ), true);
+    opacity: 0;
+    display: none;
+    background: transparent;
   }
 }
 
 @mixin percenter {
-  @include rules((
-    left: 50%,  
-    top: 50%,  
-    transform: translate(-50%, -50%),
-    position: absolute,
-  ), true);
+  left: 50%;
+  top: 50%, ;
+  transform: translate(-50%, -50%);
+  position: absolute;
 }
 
 @mixin ellipsis {
-  @include rules((
-    text-overflow: ellipsis,
-    white-space: nowrap,
-    overflow: hidden,
-  ), true);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 @mixin row {
   &:before, &:after {
-    @include rules((
-      content: '',
-      clear: both,
-      display: table,
-    ), true);
+    content: '';
+    clear: both;
+    display: table;
   }
 }
 
 @mixin flex-column {
-  @include rules((
-    flex-direction: column,
-    display: flex,
-    justify-content: space-between,
-  ), true);
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
 }
 
 @mixin flex-column-around {
-  @include rules((
-    flex-direction: column,
-    display: flex,
-    justify-content: space-around,
-  ), true);
+  flex-direction: column;
+  display: flex;
+  justify-content: space-around;
 }
 
 @mixin default-bg {
   @include full;
 
-  @include rules((
-    position: fixed,
-    background-color: rgba(0,0,0,.3),
-  ), true);
+  position: fixed;
+  background-color: rgba(0,0,0,.3);
 }
 
 @mixin table {
-  @include rules((
-    display: table,
-    width: 100%,
-  ), true);
+  display: table;
+  width: 100%;
 
   > * {
-    @include rules((
-      display: table-cell,
-    ), true);
+    display: table-cell;
 
     &.equal {
-      @include rules((
-        width: 50%,
-      ), true);
+      width: 50%;
     }
   }
 
   &.center {
     > * {
-      @include rules((
-        vertical-align: middle,
-      ), true);
+      vertical-align: middle;
     }
   }
 }
 
 @mixin active-opacity {
-  @include rules((
-    transition: .2s,
-  ), true);
+  transition: .2s;
 
   &:active,
   &:hover {
-    @include rules((
-      opacity: .7,
-    ), true);
+    opacity: .7;
   }
 }

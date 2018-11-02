@@ -1,63 +1,13 @@
-$store: ();
-
-@mixin generator($key, $value) {
-  $storeValue: map-get($store, $key);
-
-  @if $storeValue {
-    $storeValue: append($storeValue, $value);
-  } @else {
-    $storeValue: ($value);
-  }
-
-  $storeValueIndex: index($storeValue, $value);
-  $newStore: (
-    $key: $storeValue,
-  );
-
-  $store: map-merge($store, $newStore) !global;
-
-  @at-root %#{$key}-#{$storeValueIndex} {
-    #{$key}: $value;
-  }
-
-  @extend %#{$key}-#{$storeValueIndex};
-}
-
-@mixin style($key, $value) {
-  #{$key}: $value;
-}
-
-@mixin rules($styles, $mixin: false) {
-  @each $key, $value in $styles {
-    @if $mixin {
-      @include style($key, $value);
-    } @else {
-      $storeValue: map-get($store, $key);
-      $storeValueIndex: index($storeValue, $value);
-
-      @if $storeValue and $storeValueIndex {
-        @extend %#{$key}-#{$storeValueIndex};
-      } @else {
-        @include generator($key, $value);
-      }
-    }
-  }
-}
-
 %full-width {
-  @include rules((
-    left: 0,
-    right: 0,
-    position: absolute,
-  ));
+  left: 0;
+  right: 0;
+  position: absolute;
 }
 
 %full-height {
-  @include rules((
-    top: 0,
-    bottom: 0,
-    position: absolute,
-  ));
+  top: 0;
+  bottom: 0;
+  position: absolute;
 }
 
 %full {
@@ -67,102 +17,76 @@ $store: ();
 
 %no-scroll {
   &::-webkit-scrollbar {
-    @include rules((
-      opacity: 0,
-      display: none,
-      background: transparent,
-    ));
+    opacity: 0;
+    display: none;
+    background: transparent;
   }
 }
 
 %percenter {
-  @include rules((
-    left: 50%,
-    top: 50%,
-    transform: translate(-50%, -50%),
-    position: absolute,
-  ));
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
 }
 
 %ellipsis {
-  @include rules((
-    text-overflow: ellipsis,
-    white-space: nowrap,
-    overflow: hidden,
-  ));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 %row {
   &:before, &:after {
-    @include rules((
-      content: '',
-      clear: both,
-      display: table,
-    ));
+    content: '';
+    clear: both;
+    display: table;
   }
 }
 
 %flex-column {
-  @include rules((
-    flex-direction: column,
-    display: flex,
-    justify-content: space-between,
-  ));
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
 }
 
 %flex-column-around {
-  @include rules((
-    flex-direction: column,
-    display: flex,
-    justify-content: space-around,
-  ));
+  flex-direction: column;
+  display: flex;
+  justify-content: space-around;
 }
 
 %default-bg {
   @extend %full;
 
-  @include rules((
-    position: fixed,
-    background-color: rgba(0,0,0,.3),
-  ));
+  position: fixed;
+  background-color: rgba(0,0,0,.3);
 }
 
 %table {
-  @include rules((
-    display: table,
-    width: 100%,
-  ));
+  display: table;
+  width: 100%;
 
   > * {
-    @include rules((
-      display: table-cell,
-    ));
+    display: table-cell;
 
     &.equal {
-      @include rules((
-        width: 50%,
-      ));
+      width: 50%;
     }
   }
 
   &.center {
     > * {
-      @include rules((
-        vertical-align: middle,
-      ));
+      vertical-align: middle;
     }
   }
 }
 
 %active-opacity {
-  @include rules((
-    transition: .2s,
-  ));
+  transition: .2s;
 
   &:active,
   &:hover {
-    @include rules((
-      opacity: .7,
-    ));
+    opacity: .7;
   }
 }
