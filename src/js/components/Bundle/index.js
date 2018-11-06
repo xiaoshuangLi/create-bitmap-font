@@ -1,4 +1,5 @@
 import './Bundle.scss';
-import Bundle from './Bundle';
+import Bundle, { createBundle } from './Bundle';
 
+export { createBundle };
 export default Bundle;
