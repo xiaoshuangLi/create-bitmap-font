@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import homeRoute from 'js/container/home/route';
+import homeRoute from 'js/containers/home/route';
 
 import App from './components/App';
 import NotFound from './components/NotFound';
