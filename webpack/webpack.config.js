@@ -4,7 +4,7 @@ var projectFolder = path.resolve(__dirname, '..');
 module.exports = {
   context: projectFolder,
   entry: {
-    main: ['@babel/polyfill', './src/index.entry'],
+    main: './src/index.entry',
   },
   output: {
     path: path.resolve(projectFolder, 'public'),

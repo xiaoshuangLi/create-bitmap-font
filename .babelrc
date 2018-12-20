@@ -3,7 +3,12 @@
     "@babel/preset-env"
   ],
   "plugins": [
-    "@babel/plugin-transform-runtime",
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": 2
+      }
+    ],
     "transform-promise-to-bluebird",
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-syntax-import-meta",
