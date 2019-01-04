@@ -1,7 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, forwardRef } from 'react';
+import { withRouter, Router, Switch } from 'react-router';
+import { createBrowserHistory } from 'history';
 import qs from 'qs';
 
+const qsOpts = { ignoreQueryPrefix: true };
+
 const loadedBundle = new WeakMap();
+const compStore = new WeakMap();
 
 class Bundle extends Component {
   state = {
@@ -41,18 +46,106 @@ class Bundle extends Component {
   }
 }
 
+const getOpts = (opts) => typeof opts === 'string' ? { pathname: opts } : opts;
 
-const qsOpts = { ignoreQueryPrefix: true };
+const getOptsByQuery = (baseOpts = {}) => {
+  const opts = getOpts(baseOpts);
+  const {
+    search: optsSearch,
+    query: optsQuery,
+    ...others
+  } = opts;
 
-const createBundle = load => (props = {}) => {
-  const { location = {} } = props;
-  const { search = '' } = location;
+  if (!optsSearch && !optsQuery) {
+    return baseOpts;
+  }
 
-  const query = qs.parse(search, qsOpts);
+  const query = Object.assign({}, qs.parse(optsSearch, qsOpts), optsQuery);
+  const search = qs.stringify(query);
 
-  const renderComp = Comp => (
-    <Comp query={query} {...props} />
+  return Object.assign({}, others, {
+    search,
+  });
+};
+
+const getLocation = (props = {}) => {
+  const { location } = props;
+
+  if (location !== undefined) {
+    return location;
+  }
+
+  if (typeof window === 'undefined') {
+    return {};
+  }
+
+  return window.location;
+}
+
+export const withQuery = Comp => {
+  const CompInStore = compStore.get(Comp);
+
+  if (CompInStore) {
+    return CompInStore;
+  }
+
+  const CompWithQuery = forwardRef((props = {}, ref) => {
+    const { history } = props;
+    const location = getLocation(props);
+
+    const { search = '' } = location;
+    const query = qs.parse(search, qsOpts);
+
+    if (history === undefined) {
+      const CompWithRouterAndQuery = withRouter(withQuery(Comp));
+
+      return (
+        <CompWithRouterAndQuery
+          ref={ref}
+          {...props}
+          />
+      );
+    }
+
+    const push = opts => history.push(getOptsByQuery(opts));
+    const replace = opts => history.replace(getOptsByQuery(opts));
+
+    return (
+      <Comp
+        ref={ref}
+        query={query}
+        push={push}
+        replace={replace}
+        {...props}
+        />
+    );
+  });
+
+  compStore.set(Comp, CompWithQuery);
+  return CompWithQuery;
+};
+
+export const withQueryRouter = Comp => forwardRef((props = {}, ref) => {
+  const CompWithQuery = withQuery(Comp);
+  const history = createBrowserHistory();
+
+  return (
+    <Router history={history}>
+      <CompWithQuery ref={ref} {...props} />
+    </Router>
   );
+});
+
+export const renderWithQuery = (Comp, props = {}) => {
+  const CompWithQuery = withQuery(Comp);
+
+  return (
+    <CompWithQuery {...props} />
+  );
+}
+
+export const createBundle = load => (props = {}) => {
+  const renderComp = Comp => renderWithQuery(Comp, props);
 
   return (
     <Bundle once load={load}>
@@ -61,5 +154,4 @@ const createBundle = load => (props = {}) => {
   );
 };
 
-export { createBundle };
 export default Bundle;
