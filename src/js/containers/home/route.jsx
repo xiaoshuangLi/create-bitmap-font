@@ -6,11 +6,7 @@ import RelativeRouter from 'js/components/RelativeRouter';
 const routes = [
   {
     exact: true,
-    component: createBundle(() => import('./pages/Test')),
-  },
-  {
-    path: '/bad',
-    component: createBundle(() => import('./pages/Bad')),
+    component: createBundle(() => import('./pages/Base')),
   },
 ];
 

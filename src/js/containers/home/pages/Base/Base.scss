@@ -1,0 +1,75 @@
+@import '~css/func/index';
+
+@mixin baseButton {
+  .base-button {
+    position: fixed;
+    background: white;
+    top: 0;
+    right: 0;
+    padding: 10px;
+    box-shadow: 0 0 5px rgba(black, .2);
+
+    .button-item {
+      cursor: pointer;
+
+      @extend %active-opacity;
+    }
+  }
+}
+
+@mixin baseSize {
+  .base-size {
+    display: flex;
+
+    > * {
+      flex: 1;
+
+      & + * {
+        margin-left: 10px;
+      }
+    }
+
+    .input-item {
+      border: 1px solid black;
+    }
+  }
+}
+
+@mixin baseTextarea {
+  .base-textarea {
+    .textarea-item {
+      display: block;
+      width: 100%;
+      outline: none;
+    }
+  }
+}
+
+@mixin baseCanvas {
+  .base-canvas {
+    .canvas-item {
+      padding: 0;
+      margin: 0;
+      background: black;
+    }
+  }
+}
+
+.pages-home-base-render {
+  padding: 10px;
+
+  > * {
+    & + * {
+      margin-top: 10px;
+    }
+  }
+
+  textarea, input {
+    padding: 5px;
+  }
+
+  @include baseButton;
+  @include baseSize;
+  @include baseTextarea;
+  @include baseCanvas;
+}
