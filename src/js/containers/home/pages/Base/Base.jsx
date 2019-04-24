@@ -297,6 +297,7 @@ class Base extends Component {
     let currY = size;
 
     const height = convert(baseHeight);
+    const baseWidth = getTextMeasure(font, '█').width;
 
     const children = text.split('').map((char = '') => {
       const oldChild = baseChildren.find(curr => curr.code === converCharToCode(char));
@@ -307,7 +308,7 @@ class Base extends Component {
         code: converCharToCode(char),
       };
 
-      child.width = measure.width || getTextMeasure(font, '█').width;
+      child.width = measure.width || baseWidth;
 
       if (oldChild === undefined) {
         child.offset = `0 0`;
@@ -316,9 +317,26 @@ class Base extends Component {
         const oldOffsets = oldChild.offset.split(' ').map(item => Number(item));
         const oldRects =  oldChild.rect.split(' ').map(item => Number(item));
 
-        child.width += (oldOffsets[0] ? 2 : 0);
-        child.offset = `${oldOffsets[0] ? 1 : 0} ${ measure.offsetY}`;
-        child.rect = `${currX + measure.offsetX} ${currY + measure.offsetY} ${measure.width} ${measure.height}`;
+        if (('█╗╔═║╚╝▀▄▒░▓▌▐┐┌└┘').includes(char)) {
+          const isRight = ('╔╚▐┌└').includes(char);
+          const isCenter = ('║').includes(char);
+
+          let offsetX = 0;
+
+          if (isRight) {
+            offsetX = baseWidth - measure.width;
+          } else if (isCenter) {
+            offsetX = (baseWidth - measure.width) / 2;
+          }
+
+          child.width = baseWidth;
+          child.offset = `${offsetX} ${measure.offsetY}`;
+          child.rect = `${currX + measure.offsetX} ${currY + measure.offsetY} ${measure.width} ${measure.height}`;
+        } else {
+          child.width += (oldOffsets[0] ? 2 : 0);
+          child.offset = `${oldOffsets[0] ? 1 : 0} ${ measure.offsetY}`;
+          child.rect = `${currX + measure.offsetX} ${currY + measure.offsetY} ${measure.width} ${measure.height}`;
+        }
       }
 
       ctx.fillText(char, currX, currY);
