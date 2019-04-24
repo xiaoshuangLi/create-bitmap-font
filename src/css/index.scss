@@ -1,5 +1,12 @@
 @import "./base";
 
+$font: './font.ttf';
+
+@font-face {
+  font-family: "game-font";
+  src: url($font) format('truetype');
+}
+
 body{
   background-color: white;
 }

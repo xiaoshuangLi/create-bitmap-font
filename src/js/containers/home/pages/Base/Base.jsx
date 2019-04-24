@@ -43,8 +43,6 @@ const converCharToCode = (char = '') => {
   return curr === undefined ? char : curr.code;
 };
 
-const convertNum = (size = 12) => (num = 16) => Math.ceil(num * size / 12);
-
 const getFont = (size, char) => {
   const fontFamily = (char && specialChars.includes(char)) ? specialFont : normalFont;
 
@@ -62,11 +60,25 @@ const initCanvas = (ele) => {
   // ele.width = ele.clientWidth;
   // ele.height = ele.clientHeight;
 
-  ele.width = ele.clientWidth * 2;
-  ele.height = ele.clientHeight * 2;
+  ele.width = ele.clientWidth;
+  ele.height = ele.clientHeight;
 
   ctx.textBaseline = "top";
   ctx.fillStyle = '#ffffff';
+};
+
+const getImageUrl = (imageData = {}) => {
+  const { width, height } = imageData;
+  const canvas = document.createElement("canvas");
+
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.putImageData(imageData, 0, 0);
+
+  return canvas.toDataURL();
 };
 
 const getTextMeasure = (size, text) => {
@@ -174,24 +186,27 @@ class Base extends Component {
   componentDidMount() {
     this._initText();
     this._initCanvas();
-  }
 
-  componentDidUpdate(prevProps, prevState = {}) {
-    const { value = {} } = this.state;
-    const { value: prevValue = {} } = prevState;
-
-    if (JSON.stringify(value) === JSON.stringify(prevValue)) {
-      return;
-    }
-
-    this._refreshFonts();
+    document.fonts.load("12px game-font").then(() => setTimeout(() => this._refreshFonts()));
   }
 
   onChangeForm = (baseValue = {}) => {
-    const { text: baseText, ...others } = baseValue;
+    const {
+      text: baseText,
+      minSize: baseMinSize,
+      maxSize: baseMaxSize,
+      ...others
+    } = baseValue;
 
     const text = this._getText(baseText);
-    const value = Object.assign({}, others, { text });
+    const minSize = Number(baseMinSize);
+    const maxSize = Number(baseMaxSize);
+
+    const value = Object.assign({}, others, {
+      text,
+      minSize,
+      maxSize,
+    });
 
     this.setState({ value });
   }
@@ -203,19 +218,22 @@ class Base extends Component {
   }
 
   onClickDownload = () => {
-    const { fonts = [] } = this.state;
     const ele = this._canvasRef.current;
+    const { fonts = [], value = {} } = this.state;
+    const { minSize, maxSize } = value;
 
-    fonts.forEach((font = {}) => {
-      const { size } = font;
+    for (let v = minSize; v <= maxSize; v += 1) {
+      const baseFont = this._drawFont(v);
+      const { imageWidth, imageHeight, ...font } = baseFont;
+
       const xml = getFntStr(font);
 
       const xmlBlob = new Blob([xml], {type : 'application/xml'});
-      const imageUrl = ele.toDataURL("image/png");
+      const imageUrl = getImageUrl(ctx.getImageData(0, 0, imageWidth, imageHeight));
 
-      downloadBlob(xmlBlob, `char_${size}.fnt`);
-      download(imageUrl, `char_${size}.png`);
-    });
+      downloadBlob(xmlBlob, `char_${v}.fnt`);
+      download(imageUrl, `char_${v}.png`);
+    }
   }
 
   _initText() {
@@ -269,21 +287,9 @@ class Base extends Component {
 
   _refreshFonts() {
     const { value = {} } = this.state;
-    const { minSize, maxSize } = value;
+    const { maxSize } = value;
 
-    const ele = this._canvasRef.current;
-
-    if (!ele) {
-      return;
-    }
-
-    const fonts = [];
-
-    for (let v = minSize; v <= maxSize; v += 1) {
-      fonts.push(this._drawFont(v));
-    }
-
-    this.setState({ fonts });
+    this._drawFont(maxSize);
   }
 
   _drawFont(size = 12) {
@@ -295,16 +301,16 @@ class Base extends Component {
       return;
     }
 
+    ctx.clearRect(0, 0, ele.width, ele.height);
+
     const { children: baseChildren = [], ...others } = base;
     const { height: baseHeight = 16 } = others;
 
-    const convert = convertNum(size);
+    const num = Number(size);
+    const maxWidth = 512;
 
-    const num = size;
-    const maxWidth = size * num * 1.5;
-
-    let currX = size;
-    let currY = size;
+    let currX = num;
+    let currY = num;
 
     const height = getTextMeasure(size, '║').height;
     const baseWidth = getTextMeasure(size, '█').width;
@@ -363,7 +369,13 @@ class Base extends Component {
       return child;
     });
 
-    return Object.assign({}, others, { height, children, size });
+    return Object.assign({}, others, {
+      height,
+      children,
+      size,
+      imageWidth: maxWidth,
+      imageHeight: currY + num * 2,
+    });
   }
 
   renderButton() {
@@ -377,8 +389,8 @@ class Base extends Component {
   renderSize() {
     return (
       <div className="base-size">
-        <input type="text" className="input-item" placeholder="min-size" _name="minSize" />
-        <input type="text" className="input-item" placeholder="max-size" _name="maxSize" />
+        <input type="number" className="input-item" placeholder="min-size" _name="minSize" />
+        <input type="number" className="input-item" placeholder="max-size" _name="maxSize" />
       </div>
     );
   }
@@ -398,6 +410,7 @@ class Base extends Component {
   renderCanvas() {
     const style = {
       width: '100%',
+      minWidth: '600px',
       height: '1000px',
     };
 

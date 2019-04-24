@@ -1,12 +1,5 @@
 @import '~css/func/index';
 
-$font: './font.ttf';
-
-@font-face {
-  font-family: "game-font";
-  src: url($font) format('truetype');
-}
-
 @mixin baseButton {
   .base-button {
     position: fixed;
