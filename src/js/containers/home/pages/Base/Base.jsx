@@ -8,6 +8,14 @@ import { getValueFromEvent } from 'js/common';
 
 import base from './base.json';
 
+const cubeChars = '▒░▓';
+const specialChars = '█╗╔═║╚╝▀▄▒░▓▌▐┐┌└┘';
+const rightSpecialChars = '╔╚▐┌└';
+const centerSpecialChars = '║';
+
+const normalFont = 'game-font';
+const specialFont = '"Courier New", Monospace';
+
 const convertList = [
   {
     code: '&amp;',
@@ -37,6 +45,12 @@ const converCharToCode = (char = '') => {
 
 const convertNum = (size = 12) => (num = 16) => Math.ceil(num * size / 12);
 
+const getFont = (size, char) => {
+  const fontFamily = (char && specialChars.includes(char)) ? specialFont : normalFont;
+
+  return `${size}px ${fontFamily}`;
+};
+
 let ctx;
 
 const initCanvas = (ele) => {
@@ -55,7 +69,7 @@ const initCanvas = (ele) => {
   ctx.fillStyle = '#ffffff';
 };
 
-const getTextMeasure = (font, text) => {
+const getTextMeasure = (size, text) => {
   const width = 1000;
   const height = 200;
   const canvas = document.createElement("canvas");
@@ -66,7 +80,7 @@ const getTextMeasure = (font, text) => {
   const x = 500;
   const y = 80;
 
-  ctx.font = font;
+  ctx.font = getFont(size, text);
   ctx.textBaseline = "top";
   ctx.clearRect(0, 0, width, height);
   ctx.fillText(text, x, y);
@@ -281,10 +295,6 @@ class Base extends Component {
       return;
     }
 
-    const font = `${size}px "Courier New", Monospace`;
-
-    ctx.font = font;
-
     const { children: baseChildren = [], ...others } = base;
     const { height: baseHeight = 16 } = others;
 
@@ -296,12 +306,13 @@ class Base extends Component {
     let currX = size;
     let currY = size;
 
-    const height = convert(baseHeight);
-    const baseWidth = getTextMeasure(font, '█').width;
+    const height = getTextMeasure(size, '║').height;
+    const baseWidth = getTextMeasure(size, '█').width;
 
     const children = text.split('').map((char = '') => {
+      const font = getFont(size, char);
       const oldChild = baseChildren.find(curr => curr.code === converCharToCode(char));
-      const measure = getTextMeasure(font, ('▒░▓').includes(char) ? '█' : char);
+      const measure = getTextMeasure(size, cubeChars.includes(char) ? '█' : char);
 
       const child = {
         tag: 'Char',
@@ -317,9 +328,9 @@ class Base extends Component {
         const oldOffsets = oldChild.offset.split(' ').map(item => Number(item));
         const oldRects =  oldChild.rect.split(' ').map(item => Number(item));
 
-        if (('█╗╔═║╚╝▀▄▒░▓▌▐┐┌└┘').includes(char)) {
-          const isRight = ('╔╚▐┌└').includes(char);
-          const isCenter = ('║').includes(char);
+        if (specialChars.includes(char)) {
+          const isRight = rightSpecialChars.includes(char);
+          const isCenter = centerSpecialChars.includes(char);
 
           let offsetX = 0;
 
@@ -339,6 +350,7 @@ class Base extends Component {
         }
       }
 
+      ctx.font = font;
       ctx.fillText(char, currX, currY);
 
       currX += (measure.width + 10);
